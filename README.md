@@ -1,5 +1,5 @@
 # eStore
-A shopping app built with React Native. This is built following a project in React Native course by Maximillian Schwarzmuller
+A shopping app built with React Native. This project was inpsired/guided by a React Native Udemy course by Maximillian Schwarzmuller
 
 ## Key Features
 * State management with Redux
