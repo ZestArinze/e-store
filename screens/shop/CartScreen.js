@@ -5,6 +5,7 @@ import Colors from "../../constants/Colors";
 import { StyleSheet, View, Text, Button, FlatList } from "react-native";
 import CartItem from "../../components/shop/CartItem";
 import * as cartActions from "../../store/actions/cart";
+import * as ordersActions from "../../store/actions/orders";
 
 const CartScreen = () => {
   const cartTotalAmount = useSelector((state) => state.cart.totalAmount);
@@ -42,7 +43,13 @@ const CartScreen = () => {
           Total:{" "}
           <Text style={styles.amount}>${cartTotalAmount.toFixed(2)}</Text>
         </Text>
-        <Button title='Order Now' disabled={cartItems.length === 0} />
+        <Button
+          title='Order Now'
+          disabled={cartItems.length === 0}
+          onPress={() => {
+            dispatch(ordersActions.addOrder(cartItems, cartTotalAmount));
+          }}
+        />
       </View>
       <FlatList
         data={cartItems}
@@ -52,6 +59,7 @@ const CartScreen = () => {
             quantity={itemdata.item.quantity}
             title={itemdata.item.productTitle}
             amount={itemdata.item.sum}
+            deletable
             onRemove={() => {
               dispatch(cartActions.removeFromCart(itemdata.item.productId));
             }}
@@ -60,6 +68,10 @@ const CartScreen = () => {
       />
     </View>
   );
+};
+
+CartScreen.navigationOptions = {
+  headerTitle: "Your Cart",
 };
 
 const styles = StyleSheet.create({
