@@ -4,4 +4,5 @@ export default {
   white: "#ffffff",
   black: "#333333",
   gray: "#888888",
+  red: "#f5424b",
 };

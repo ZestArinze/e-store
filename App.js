@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
-import productReducer from "./store/reducers/products";
+
 import ShopNavigator from "./navigation/ShopNavigator";
 import { AppRegistry } from "react-native";
 
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
 
+import productReducer from "./store/reducers/products";
+import cartReducer from "./store/reducers/cart";
+
 const rootReducer = combineReducers({
   products: productReducer,
+  cart: cartReducer,
 });
 
 const store = createStore(rootReducer);
@@ -42,4 +46,4 @@ export default function App() {
   );
 }
 
-AppRegistry.registerComponent("eStore", () => App);
+// AppRegistry.registerComponent("eStore", () => App);
