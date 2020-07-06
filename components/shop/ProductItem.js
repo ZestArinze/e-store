@@ -4,12 +4,12 @@ import {
   View,
   Image,
   Text,
-  Button,
   TouchableOpacity,
   Platform,
   TouchableNativeFeedback,
 } from "react-native";
 import Colors from "../../constants/Colors";
+import Card from "../ui/Card";
 
 const ProductItem = (props) => {
   let MyTouchable = TouchableOpacity;
@@ -18,9 +18,9 @@ const ProductItem = (props) => {
   }
 
   return (
-    <View style={styles.product}>
+    <Card style={styles.product}>
       <View style={styles.touchable}>
-        <MyTouchable onPress={props.onViewDetail} useForeGround>
+        <MyTouchable onPress={props.onSelect} useForeGround>
           <View>
             <View style={styles.imageContainer}>
               <Image style={styles.image} source={{ uri: props.image }} />
@@ -29,34 +29,16 @@ const ProductItem = (props) => {
               <Text style={styles.title}>{props.title}</Text>
               <Text style={styles.price}>${props.price.toFixed(2)}</Text>
             </View>
-            <View style={styles.actions}>
-              <Button
-                color={Colors.primary}
-                title='Product Details'
-                onPress={props.onViewDetail}
-              />
-              <Button
-                color={Colors.primary}
-                title='Add To Cart'
-                onPress={props.onAddToCart}
-              />
-            </View>
+            <View style={styles.actions}>{props.children}</View>
           </View>
         </MyTouchable>
       </View>
-    </View>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
   product: {
-    shadowColor: Colors.black,
-    shadowOpacity: 0.25,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 10,
-    elevation: 5,
-    borderRadius: 10,
-    backgroundColor: Colors.white,
     height: 300,
     margin: 10,
   },
