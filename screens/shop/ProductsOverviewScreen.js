@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 import {
   FlatList,
@@ -25,18 +25,39 @@ import Colors from "../../constants/Colors";
 
 const ProductsOverviewScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const loadProducts = async () => {
-      setIsLoading(true);
-      await dispatch(productActions.getProducts());
-      setIsLoading(false);
-    };
+  const loadProducts = useCallback(async () => {
+    setError(null);
+    setIsLoading(true);
 
+    try {
+      await dispatch(productActions.getProducts());
+    } catch (error) {
+      setError(error.message);
+    }
+
+    setIsLoading(false);
+  }, [dispatch, setIsLoading, setError]);
+
+  useEffect(() => {
+    // gets attached after the component has renderd the first time
+    const willFocusSub = props.navigation.addListener(
+      "willFocus",
+      loadProducts
+    );
+
+    // runs when component is destroyed or we're about to have a rerun
+    return () => {
+      willFocusSub.remove();
+    };
+  }, [loadProducts]);
+
+  useEffect(() => {
     loadProducts();
-  }, [dispatch]);
+  }, [dispatch, loadProducts]);
 
   const selectItemHandler = (id, title) => {
     props.navigation.navigate({
@@ -48,10 +69,27 @@ const ProductsOverviewScreen = (props) => {
     });
   };
 
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text>An error has occured</Text>
+        <Button title='Retry' color={Colors.primary} onPress={loadProducts} />
+      </View>
+    );
+  }
+
   if (isLoading) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size='large' color={Colors.primary} />
+      </View>
+    );
+  }
+
+  if (!isLoading && products.length === 0) {
+    return (
+      <View style={styles.centered}>
+        <Text>No products retrieved</Text>
       </View>
     );
   }

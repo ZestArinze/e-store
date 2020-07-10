@@ -61,6 +61,9 @@ const EditProductScreen = (props) => {
   });
 
   const submitHandler = useCallback(() => {
+    console.log("title: " + formState.inputValues.title);
+    console.log("description: " + formState.inputValues.description);
+
     if (!formState.formIsValid) {
       Alert.alert("Invalid input!", "Please check the form for errors.", [
         { text: "OK" },
@@ -73,7 +76,8 @@ const EditProductScreen = (props) => {
           prodId,
           formState.inputValues.title,
           formState.inputValues.description,
-          formState.inputValues.imageUrl
+          formState.inputValues.imageUrl,
+          +formState.inputValues.price
         )
       );
     } else {

@@ -8,31 +8,39 @@ export const SET_PRODUCTS = "GET_PRODUCTS";
 
 export const getProducts = () => {
   return async (dispatch) => {
-    // execute aync code
-    const response = await fetch(API_BASE_PATH + FIREBASE_PRODUCTS);
+    try {
+      // execute aync code
+      const response = await fetch(API_BASE_PATH + FIREBASE_PRODUCTS);
 
-    // TODO: handle error
+      // check that response is OK (within 2xx range)
+      if (!response.ok) {
+        throw new Error("Error making network request!");
+      }
 
-    // extract response data
-    const responseData = await response.json();
-    const loadedProducts = [];
+      // extract response data
+      const responseData = await response.json();
+      const loadedProducts = [];
 
-    for (const key in responseData) {
-      const data = responseData[key];
+      for (const key in responseData) {
+        const data = responseData[key];
 
-      loadedProducts.push(
-        new Product(
-          key,
-          "u1",
-          data.title,
-          data.imageUrl,
-          data.description,
-          data.price
-        )
-      );
+        loadedProducts.push(
+          new Product(
+            key,
+            "u1",
+            data.title,
+            data.imageUrl,
+            data.description,
+            data.price
+          )
+        );
+      }
+
+      dispatch({ type: SET_PRODUCTS, products: loadedProducts });
+    } catch (error) {
+      // handle error
+      throw error;
     }
-
-    dispatch({ type: SET_PRODUCTS, products: loadedProducts });
   };
 };
 
@@ -78,14 +86,38 @@ export const updateProduct = (
   imageUrl,
   price
 ) => {
-  return {
-    type: UPDATE_PRODUCT,
-    productId,
-    productData: {
-      title,
-      description,
-      imageUrl,
-    },
+  return async (distapch) => {
+    const updateUrl = API_BASE_PATH + `products/${productId}.json`;
+
+    // execute aync code
+    const response = await fetch(updateUrl, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        description,
+        imageUrl,
+      }),
+    });
+
+    // extract response data
+    const responseData = await response.json();
+
+    console.log(responseData);
+
+    console.log("Done updating product " + productId + " at " + updateUrl);
+
+    dispatch({
+      type: UPDATE_PRODUCT,
+      productId,
+      productData: {
+        title,
+        description,
+        imageUrl,
+      },
+    });
   };
 };
 
