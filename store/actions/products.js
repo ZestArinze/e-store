@@ -45,7 +45,7 @@ export const getProducts = () => {
 };
 
 export const createProduct = (title, description, imageUrl, price) => {
-  return async (distapch) => {
+  return async (dispatch) => {
     // execute aync code
     const response = await fetch(API_BASE_PATH + FIREBASE_PRODUCTS, {
       method: "POST",
@@ -65,7 +65,7 @@ export const createProduct = (title, description, imageUrl, price) => {
 
     console.log(responseData);
 
-    distapch({
+    dispatch({
       // dispatch action afterwards
       type: CREATE_PRODUCT,
       productData: {
@@ -86,11 +86,11 @@ export const updateProduct = (
   imageUrl,
   price
 ) => {
-  return async (distapch) => {
-    const updateUrl = API_BASE_PATH + `products/${productId}.json`;
+  return async (dispatch) => {
+    const url = API_BASE_PATH + `products/${productId}.json`;
 
     // execute aync code
-    const response = await fetch(updateUrl, {
+    await fetch(url, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -101,13 +101,6 @@ export const updateProduct = (
         imageUrl,
       }),
     });
-
-    // extract response data
-    const responseData = await response.json();
-
-    console.log(responseData);
-
-    console.log("Done updating product " + productId + " at " + updateUrl);
 
     dispatch({
       type: UPDATE_PRODUCT,
@@ -122,8 +115,17 @@ export const updateProduct = (
 };
 
 export const deletProduct = (productId) => {
-  return {
-    type: DELETE_PRODUCT,
-    productId: productId,
+  return async (dispatch) => {
+    const url = API_BASE_PATH + `products/${productId}.json`;
+
+    // execute aync code
+    await fetch(url, {
+      method: "DELETE",
+    });
+
+    dispatch({
+      type: DELETE_PRODUCT,
+      productId: productId,
+    });
   };
 };
