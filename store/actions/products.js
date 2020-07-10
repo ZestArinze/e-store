@@ -10,7 +10,7 @@ export const getProducts = () => {
   return async (dispatch) => {
     try {
       // execute aync code
-      const response = await fetch(API_BASE_PATH + FIREBASE_PRODUCTS);
+      const response = await fetch(API_BASE_PATH + FIREBASE_PRODUCTS + ".json");
 
       // check that response is OK (within 2xx range)
       if (!response.ok) {
@@ -46,36 +46,48 @@ export const getProducts = () => {
 
 export const createProduct = (title, description, imageUrl, price) => {
   return async (dispatch) => {
-    // execute aync code
-    const response = await fetch(API_BASE_PATH + FIREBASE_PRODUCTS, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title,
-        description,
-        imageUrl,
-        price,
-      }),
-    });
+    try {
+      // execute aync code
+      const response = await fetch(
+        API_BASE_PATH + FIREBASE_PRODUCTS + ".json",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            description,
+            imageUrl,
+            price,
+          }),
+        }
+      );
 
-    // extract response data
-    const responseData = await response.json();
+      // extract response data
+      const responseData = await response.json();
 
-    console.log(responseData);
+      // check that response is OK (within 2xx range)
+      if (!response.ok) {
+        throw new Error("Error making network request!");
+      }
 
-    dispatch({
-      // dispatch action afterwards
-      type: CREATE_PRODUCT,
-      productData: {
-        id: responseData.name,
-        title,
-        description,
-        imageUrl,
-        price,
-      },
-    });
+      console.log(responseData);
+
+      dispatch({
+        // dispatch action afterwards
+        type: CREATE_PRODUCT,
+        productData: {
+          id: responseData.name,
+          title,
+          description,
+          imageUrl,
+          price,
+        },
+      });
+    } catch (e) {
+      throw e;
+    }
   };
 };
 
@@ -87,45 +99,63 @@ export const updateProduct = (
   price
 ) => {
   return async (dispatch) => {
-    const url = API_BASE_PATH + `products/${productId}.json`;
+    try {
+      const url = API_BASE_PATH + FIREBASE_PRODUCTS + `${productId}.json`;
 
-    // execute aync code
-    await fetch(url, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title,
-        description,
-        imageUrl,
-      }),
-    });
+      // execute aync code
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          imageUrl,
+        }),
+      });
 
-    dispatch({
-      type: UPDATE_PRODUCT,
-      productId,
-      productData: {
-        title,
-        description,
-        imageUrl,
-      },
-    });
+      // check that response is OK (within 2xx range)
+      if (!response.ok) {
+        throw new Error("Error making network request!");
+      }
+
+      dispatch({
+        type: UPDATE_PRODUCT,
+        productId,
+        productData: {
+          title,
+          description,
+          imageUrl,
+        },
+      });
+    } catch (e) {
+      throw e;
+    }
   };
 };
 
 export const deletProduct = (productId) => {
   return async (dispatch) => {
-    const url = API_BASE_PATH + `products/${productId}.json`;
+    try {
+      const url = API_BASE_PATH + `products/${productId}.json`;
 
-    // execute aync code
-    await fetch(url, {
-      method: "DELETE",
-    });
+      // execute aync code
+      const response = await fetch(url, {
+        method: "DELETE",
+      });
 
-    dispatch({
-      type: DELETE_PRODUCT,
-      productId: productId,
-    });
+      // check that response is OK (within 2xx range)
+      if (!response.ok) {
+        throw new Error("Error making network request!");
+      }
+
+      dispatch({
+        type: DELETE_PRODUCT,
+        productId: productId,
+      });
+    } catch (e) {
+      throw e;
+    }
   };
 };
