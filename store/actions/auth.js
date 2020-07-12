@@ -5,9 +5,10 @@ import {
   FIREBASE_AUTH_WEB_API_KEY,
 } from "../../constants/config";
 
-export const SIGN_UP = "SIGN_UP";
-export const LOGIN = "LOGIN";
+// export const SIGN_UP = "SIGN_UP";
+// export const LOGIN = "LOGIN";
 export const AUTHENTICATE = "AUTHENTICATE";
+export const LOGOUT = "LOGOUT";
 
 export const authenticate = (userId, token) => {
   return { type: AUTHENTICATE, userId: userId, token: token };
@@ -105,6 +106,10 @@ export const login = (email, password) => {
 
     saveDataToStorage(token, userId, expirationDate);
   };
+};
+
+export const logout = () => {
+  return { type: LOGOUT };
 };
 
 const saveDataToStorage = (token, userId, expirationDate) => {
