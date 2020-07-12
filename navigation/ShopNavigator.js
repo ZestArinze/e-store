@@ -13,6 +13,7 @@ import OrdersScreen from "../screens/shop/OrdersScreen";
 import { Ionicons } from "@expo/vector-icons";
 import UserProductsScreen from "../screens/user/UserProductsScreen";
 import EditProductsScreen from "../screens/user/EditProductScreen";
+import AuthScreen from "../screens/user/AuthScreen";
 
 const defaultnavOptions = {
   headerStyle: {
@@ -97,4 +98,18 @@ const ShopNavigator = createDrawerNavigator(
   }
 );
 
-export default createAppContainer(ShopNavigator);
+const AuthNavigator = createStackNavigator(
+  {
+    Auth: AuthScreen,
+  },
+  {
+    defaultNavigationOptions: defaultnavOptions,
+  }
+);
+
+const MainNavigator = createSwitchNavigator({
+  Auth: AuthNavigator,
+  Shop: ShopNavigator,
+});
+
+export default createAppContainer(MainNavigator);
