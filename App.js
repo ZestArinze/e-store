@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
-import ShopNavigator from "./navigation/ShopNavigator";
 
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
@@ -11,6 +10,7 @@ import productReducer from "./store/reducers/products";
 import cartReducer from "./store/reducers/cart";
 import ordersReducer from "./store/reducers/orders";
 import authReducer from "./store/reducers/auth";
+import NavigationContainer from "./navigation/NavigationContainer";
 
 const rootReducer = combineReducers({
   products: productReducer,
@@ -44,7 +44,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <ShopNavigator />
+      <NavigationContainer />
     </Provider>
   );
 }
