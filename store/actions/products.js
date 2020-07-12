@@ -7,8 +7,10 @@ export const DELETE_PRODUCT = "DELETE_PRODUCT";
 export const SET_PRODUCTS = "GET_PRODUCTS";
 
 export const getProducts = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
+      const userId = getState().auth.userId;
+
       // execute aync code
       const response = await fetch(API_BASE_PATH + FIREBASE_PRODUCTS + ".json");
 
@@ -27,7 +29,7 @@ export const getProducts = () => {
         loadedProducts.push(
           new Product(
             key,
-            "u1",
+            data.ownerId,
             data.title,
             data.imageUrl,
             data.description,
@@ -36,7 +38,13 @@ export const getProducts = () => {
         );
       }
 
-      dispatch({ type: SET_PRODUCTS, products: loadedProducts });
+      dispatch({
+        type: SET_PRODUCTS,
+        products: loadedProducts,
+        userProducts: loadedProducts.filter(
+          (product) => product.ownerId === userId
+        ),
+      });
     } catch (error) {
       // handle error
       throw error;
@@ -45,11 +53,14 @@ export const getProducts = () => {
 };
 
 export const createProduct = (title, description, imageUrl, price) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
+      const token = getState().auth.token;
+      const userId = getState().auth.userId;
+
       // execute aync code
       const response = await fetch(
-        API_BASE_PATH + FIREBASE_PRODUCTS + ".json",
+        API_BASE_PATH + FIREBASE_PRODUCTS + ".json?auth=" + token,
         {
           method: "POST",
           headers: {
@@ -60,6 +71,7 @@ export const createProduct = (title, description, imageUrl, price) => {
             description,
             imageUrl,
             price,
+            ownerId: userId,
           }),
         }
       );
@@ -83,6 +95,7 @@ export const createProduct = (title, description, imageUrl, price) => {
           description,
           imageUrl,
           price,
+          ownerId: userId,
         },
       });
     } catch (e) {
@@ -98,9 +111,11 @@ export const updateProduct = (
   imageUrl,
   price
 ) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
-      const url = API_BASE_PATH + FIREBASE_PRODUCTS + `${productId}.json`;
+      const token = getState().auth.token;
+      const url =
+        API_BASE_PATH + FIREBASE_PRODUCTS + `${productId}.json?auth=${token}`;
 
       // execute aync code
       const response = await fetch(url, {
@@ -136,9 +151,10 @@ export const updateProduct = (
 };
 
 export const deletProduct = (productId) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
-      const url = API_BASE_PATH + `products/${productId}.json`;
+      const token = getState().auth.token;
+      const url = API_BASE_PATH + `products/${productId}.json?auth=${token}`;
 
       // execute aync code
       const response = await fetch(url, {

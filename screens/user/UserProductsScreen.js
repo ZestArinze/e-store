@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, Button, Alert } from "react-native";
+import { FlatList, Button, Alert, View, Text, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import ProductItem from "../../components/shop/ProductItem";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -27,6 +27,14 @@ const UserProductsScreen = (props) => {
       },
     ]);
   };
+
+  if (userProducts.length === 0) {
+    return (
+      <View style={styles.centered}>
+        <Text>No products found for user. Maybe create some?</Text>
+      </View>
+    );
+  }
 
   return (
     <FlatList
@@ -86,5 +94,13 @@ UserProductsScreen.navigationOptions = (navData) => {
     ),
   };
 };
+
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
 
 export default UserProductsScreen;

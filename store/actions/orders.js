@@ -5,10 +5,13 @@ export const ADD_ORDER = "ADD_ORDER";
 export const SET_ORDERS = "SET_ORDERS";
 
 export const fetchOrders = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
+
+      const userId = getState().auth.userId;
+
       // execute aync code
-      const response = await fetch(API_BASE_PATH + FIREBASE_ORDERS + "u1.json");
+      const response = await fetch(API_BASE_PATH + FIREBASE_ORDERS + `${userId}.json`);
 
       // check that response is OK (within 2xx range)
       if (!response.ok) {
@@ -29,6 +32,7 @@ export const fetchOrders = () => {
       }
 
       dispatch({ type: SET_ORDERS, orders: loadedOrders });
+      
     } catch (error) {
       // handle error
       throw error;
@@ -37,13 +41,16 @@ export const fetchOrders = () => {
 };
 
 export const addOrder = (cartItems, totalAmount) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     const date = new Date();
 
     try {
+      const token = getState().auth.token;
+      const userId = getState().auth.userId;
+
       // execute aync code
       const response = await fetch(
-        API_BASE_PATH + FIREBASE_ORDERS + "u1.json",
+        API_BASE_PATH + FIREBASE_ORDERS + `${userId}.json?auth=${token}`,
         {
           method: "POST",
           headers: {
@@ -57,13 +64,18 @@ export const addOrder = (cartItems, totalAmount) => {
         }
       );
 
-      // extract response data
-      const responseData = await response.json();
-
       // check that response is OK (within 2xx range)
       if (!response.ok) {
-        throw new Error("Error making network request!");
+        const errorData = await response.json();
+        const errorId = errorData.error.message;
+
+        //let message = "Something went wrong";
+
+        throw new Error(errorData.error);
       }
+
+      // extract response data
+      const responseData = await response.json();
 
       console.log(responseData);
 
