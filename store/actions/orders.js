@@ -4,6 +4,10 @@ import Order from "../../models/Order";
 export const ADD_ORDER = "ADD_ORDER";
 export const SET_ORDERS = "SET_ORDERS";
 
+/**
+ * fetch user's orders from server and 
+ * dispatch redux action
+ */
 export const fetchOrders = () => {
   return async (dispatch, getState) => {
     try {
@@ -31,6 +35,7 @@ export const fetchOrders = () => {
         );
       }
 
+      // dispatch redux action
       dispatch({ type: SET_ORDERS, orders: loadedOrders });
       
     } catch (error) {
@@ -40,6 +45,13 @@ export const fetchOrders = () => {
   };
 };
 
+/**
+ * 
+ * dispatch action to place order for the current cart
+ * 
+ * @param cartItems items in the cart
+ * @param totalAmount total amount of the cart items
+ */
 export const addOrder = (cartItems, totalAmount) => {
   return async (dispatch, getState) => {
     const date = new Date();
@@ -79,6 +91,7 @@ export const addOrder = (cartItems, totalAmount) => {
 
       console.log(responseData);
 
+      // dispatch redux action
       dispatch({
         type: ADD_ORDER,
         orderData: {

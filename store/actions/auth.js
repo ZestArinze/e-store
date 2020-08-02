@@ -1,16 +1,19 @@
 import { AsyncStorage } from "react-native";
 
 import {
-  FIREBASE_ORDERS,
   FIREBASE_AUTH_WEB_API_KEY,
 } from "../../constants/config";
 
-// export const SIGN_UP = "SIGN_UP";
-// export const LOGIN = "LOGIN";
 export const AUTHENTICATE = "AUTHENTICATE";
 export const LOGOUT = "LOGOUT";
 let timer;
 
+/**
+ *
+ * @param {integer} userId user id on server
+ * @param {string} token authentication token
+ * @param {Date} expiryTime date the token will expire
+ */
 export const authenticate = (userId, token, expiryTime) => {
   return (dispatch) => {
     dispatch(setLogoutTimer(expiryTime));
@@ -18,6 +21,11 @@ export const authenticate = (userId, token, expiryTime) => {
   };
 };
 
+/**
+ *
+ * @param {string} email
+ * @param {string} password
+ */
 export const signUp = (email, password) => {
   return async (dispatch) => {
     const response = await fetch(
@@ -39,8 +47,8 @@ export const signUp = (email, password) => {
       const errorData = await response.json();
       const errorId = errorData.error.message;
 
+      // check for specific errors
       let message = "Something went wrong";
-
       if (errorId === "EMAIL_EXISTS") {
         message = "Email already exists";
       }
@@ -54,6 +62,7 @@ export const signUp = (email, password) => {
     const token = responseData.idToken;
     const userId = responseData.localId;
 
+    // dispatch redux action
     dispatch(
       authenticate(
         responseData.localId,
@@ -69,6 +78,12 @@ export const signUp = (email, password) => {
   };
 };
 
+/**
+ * login registered user
+ *
+ * @param {string} email
+ * @param {string} password
+ */
 export const login = (email, password) => {
   return async (dispatch) => {
     const response = await fetch(
@@ -92,6 +107,7 @@ export const login = (email, password) => {
 
       let message = "Something went wrong";
 
+      // check for specific errors
       if (errorId === "EMAIL_NOT_FOUND") {
         message = "Email not found";
       } else if (errorId === "INVALID_PASSWORD") {
@@ -107,6 +123,7 @@ export const login = (email, password) => {
     const token = responseData.idToken;
     const userId = responseData.localId;
 
+    // dispatch redux action
     dispatch(
       authenticate(
         responseData.localId,
@@ -119,10 +136,14 @@ export const login = (email, password) => {
       new Date().getTime() + parseInt(responseData.expiresIn) * 1000
     );
 
+    // save the auth response to local storage
     saveDataToStorage(token, userId, expirationDate);
   };
 };
 
+/**
+ * logout user and clear the user auth data from local storage
+ */
 export const logout = () => {
   clearLogoutTimer();
   AsyncStorage.removeItem("userData");

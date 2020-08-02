@@ -19,6 +19,7 @@ const CartScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const cartTotalAmount = useSelector((state) => state.cart.totalAmount);
 
+  // get cart items from redux store
   const cartItems = useSelector((state) => {
     const transformedCartItems = [];
 
@@ -45,6 +46,7 @@ const CartScreen = () => {
 
   const dispatch = useDispatch();
 
+  // duspatch action for creating an order
   const sendOrderHandler = async () => {
     setIsLoading(true);
     await dispatch(ordersActions.addOrder(cartItems, cartTotalAmount));

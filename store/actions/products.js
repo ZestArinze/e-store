@@ -6,6 +6,9 @@ export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
 export const SET_PRODUCTS = "GET_PRODUCTS";
 
+/**
+ * fetch all products from server
+ */
 export const getProducts = () => {
   return async (dispatch, getState) => {
     try {
@@ -52,6 +55,15 @@ export const getProducts = () => {
   };
 };
 
+/**
+ *
+ * create a new product on the serve
+ *
+ * @param {string} title the product title
+ * @param {string} description product description
+ * @param {string} imageUrl URL of the featured product image
+ * @param {double} price product price
+ */
 export const createProduct = (title, description, imageUrl, price) => {
   return async (dispatch, getState) => {
     try {
@@ -84,10 +96,8 @@ export const createProduct = (title, description, imageUrl, price) => {
         throw new Error("Error making network request!");
       }
 
-      console.log(responseData);
-
+      // dispatch redux action
       dispatch({
-        // dispatch action afterwards
         type: CREATE_PRODUCT,
         productData: {
           id: responseData.name,
@@ -104,6 +114,14 @@ export const createProduct = (title, description, imageUrl, price) => {
   };
 };
 
+/**
+ * update product on the server
+ *
+ * @param {*} productId id of the product to update
+ * @param {string} title the product title
+ * @param {string} description product description
+ * @param {string} imageUrl URL of the featured product image
+ */
 export const updateProduct = (
   productId,
   title,
@@ -150,6 +168,10 @@ export const updateProduct = (
   };
 };
 
+/**
+ * delete product on the server
+ * @param productId id of the product to delete
+ */
 export const deletProduct = (productId) => {
   return async (dispatch, getState) => {
     try {

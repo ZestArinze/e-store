@@ -48,5 +48,3 @@ export default function App() {
     </Provider>
   );
 }
-
-// AppRegistry.registerComponent("eStore", () => App);
